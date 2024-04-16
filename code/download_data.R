@@ -17,9 +17,6 @@
 #  - Medicine linking file
 #  - Conditions linking file
 
-
-
-
 # Author: Ori
 # Date: 09/04/2024
 
@@ -33,6 +30,7 @@ library(data.table)
 library(haven)
 # devtools::install_github("e-mitchell/meps_r_pkg/MEPS")
 library(MEPS)
+library(glue)
 
 # *********************************************
 # Data Download ----
@@ -47,7 +45,7 @@ save_data <- function(year, dat_type){
                         dat_type == "CLNK" ~ "ConditionsLinkFile",
                         dat_type == "RXLK" ~ "MedicinesLinkFile",
                         T ~ dat_type)
-  fwrite(temp, glue::glue("raw_data/{dat_type}{year}.csv"))
+  fwrite(temp, glue("raw_data/{dat_type}{year}.csv"))
   rm(temp)
   gc()
 }
@@ -56,4 +54,4 @@ combs <- expand_grid(year = 2008:2022, dat_type = c("FYC", "Conditions", "PMED",
                                                     "ER", "Outpatient", "Office_based", "Home_Health",
                                                     "CLNK", "RXLK"))
 
-walk2(combs$year[155:165], combs$dat_type[155:165], save_data, .progress = T)
+walk2(combs$year, combs$dat_type, save_data, .progress = T)
